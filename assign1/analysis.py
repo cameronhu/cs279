@@ -75,7 +75,7 @@ def ramachandran(sel):
     #psi angles measure the dihedral angle between c(i-1), n(i), calpha(i), c(i)
     #psi angles measure the dihedral angle between n(i), calpha(i), c(i), n(i+1)
 
-    for resnum in resnums:
+    for resnum in resnums[1:len(resnums)-1]:
         acyl_carbon_minus1 = f'{resnum-1}c'
         nitrogen = f'{resnum}n'
         calpha = f'{resnum}ca'
