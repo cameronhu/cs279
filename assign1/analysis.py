@@ -76,22 +76,34 @@ def ramachandran(sel):
     #psi angles measure the dihedral angle between n(i), calpha(i), c(i), n(i+1)
 
     for resnum in resnums:
+        acyl_carbon_minus1 = f'{resnum-1}c'
+        nitrogen = f'{resnum}n'
+        calpha = f'{resnum}ca'
+        acyl_carbon = f'{resnum}c'
+        nitrogen_plus1 = f'{resnum+1}n'
         #i-1 acyl carbon
-        cmd.select(f'{resnum - 1}c', f'residue {resnum - 1} and name c')
+        cmd.select(acyl_carbon_minus1, f'residue {resnum - 1} and name c')
         #nitrogen
-        cmd.select(f'{resnum}n', f'residue {resnum} and name n')
+        cmd.select(nitrogen, f'residue {resnum} and name n')
         #calpha
-        cmd.select(f'{resnum}ca', f'residue {resnum} and name ca')
+        cmd.select(calpha, f'residue {resnum} and name ca')
         #acyl_carbon
-        cmd.select(f'{resnum}c', f'residue {resnum} and name c')
+        cmd.select(acyl_carbon, f'residue {resnum} and name c')
         #i+1 nitrogen
-        cmd.select(f'{resnum + 1}n', f'residue {resnum + 1} and name n')
-        phi_angle = cmd.get_dihedral(f'{resnum-1}c', f'{resnum}n', f'{resnum}ca', f'{resnum}c')
-        cmd.dihedral(f'{resnum}_phi', f'{resnum-1}c', f'{resnum}n', f'{resnum}ca', f'{resnum}c')
-        psi_angle = cmd.get_dihedral(f'{resnum}n', f'{resnum}ca', f'{resnum}c', f'{resnum+1}n')
-        cmd.dihedral(f'{resnum}_psi', f'{resnum}n', f'{resnum}ca', f'{resnum}c', f'{resnum+1}n')
-        phis.append(phi_angle)
-        psis.append(psi_angle)
+        cmd.select(nitrogen_plus1, f'residue {resnum + 1} and name n')
+
+        try:
+            cmd.dihedral(f'{resnum}_phi', acyl_carbon_minus1, nitrogen, calpha, acyl_carbon)
+            phi_angle = cmd.get_dihedral(acyl_carbon_minus1, nitrogen, calpha, acyl_carbon)
+            phis.append(phi_angle)
+        except:
+            print(f"phi angle error {resnum}")
+        try:
+            psi_angle = cmd.get_dihedral(nitrogen, calpha, acyl_carbon, nitrogen_plus1)
+            cmd.dihedral(f'{resnum}_psi', nitrogen, calpha, acyl_carbon, nitrogen_plus1)
+            psis.append(psi_angle)
+        except:
+            print(f"psi angle error {resnum}")
 
     ############################################################################
     plt.scatter(phis, psis)
