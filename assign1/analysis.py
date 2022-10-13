@@ -92,19 +92,12 @@ def ramachandran(sel):
         #i+1 nitrogen
         cmd.select(nitrogen_plus1, f'residue {resnum + 1} and name n and {sel}')
         if (cmd.count_atoms(acyl_carbon_minus1) == 1) and (cmd.count_atoms(nitrogen_plus1) == 1):
-            try:
-                cmd.dihedral(f'{resnum}_phi', acyl_carbon_minus1, nitrogen, calpha, acyl_carbon)
-                phi_angle = cmd.get_dihedral(acyl_carbon_minus1, nitrogen, calpha, acyl_carbon)
-                phis.append(phi_angle)
-            except:
-                print(f"phi angle error {resnum}")
-            try:
-                psi_angle = cmd.get_dihedral(nitrogen, calpha, acyl_carbon, nitrogen_plus1)
-                cmd.dihedral(f'{resnum}_psi', nitrogen, calpha, acyl_carbon, nitrogen_plus1)
-                psis.append(psi_angle)
-            except:
-                print(f"psi angle error {resnum}")
-
+            cmd.dihedral(f'{resnum}_phi', acyl_carbon_minus1, nitrogen, calpha, acyl_carbon)
+            phi_angle = cmd.get_dihedral(acyl_carbon_minus1, nitrogen, calpha, acyl_carbon)
+            phis.append(phi_angle)
+            psi_angle = cmd.get_dihedral(nitrogen, calpha, acyl_carbon, nitrogen_plus1)
+            cmd.dihedral(f'{resnum}_psi', nitrogen, calpha, acyl_carbon, nitrogen_plus1)
+            psis.append(psi_angle)
 
     ############################################################################
     plt.scatter(phis, psis)
