@@ -91,6 +91,7 @@ def ramachandran(sel):
         cmd.select(acyl_carbon, f'residue {resnum} and name c and {sel}')
         #i+1 nitrogen
         cmd.select(nitrogen_plus1, f'residue {resnum + 1} and name n and {sel}')
+
         if (cmd.count_atoms(acyl_carbon_minus1) == 1) and (cmd.count_atoms(nitrogen_plus1) == 1):
             cmd.dihedral(f'{resnum}_phi', acyl_carbon_minus1, nitrogen, calpha, acyl_carbon)
             phi_angle = cmd.get_dihedral(acyl_carbon_minus1, nitrogen, calpha, acyl_carbon)
@@ -108,6 +109,16 @@ def ramachandran(sel):
     plt.gca().set_aspect('equal')
     plt.show()
 
+
+def select_for_all_chains(sel):
+    """
+    Create a selection for every chain in sel
+    """
+    for chain in cmd.get_chains(sel):
+        cmd.select(f'{chain}_chain', f'chain {chain} and {sel}')
+
+
 cmd.extend('plot_distance', plot_distance)
 cmd.extend('plot_rmsd', plot_rmsd)
 cmd.extend('ramachandran', ramachandran)
+cmd.extend('select_for_all_chains', select_for_all_chains)
