@@ -76,22 +76,21 @@ def ramachandran(sel):
     #psi angles measure the dihedral angle between n(i), calpha(i), c(i), n(i+1)
 
     for resnum in resnums[1:len(resnums)-1]:
-        acyl_carbon_minus1 = f'{resnum-1}c'
-        nitrogen = f'{resnum}n'
-        calpha = f'{resnum}ca'
-        acyl_carbon = f'{resnum}c'
-        nitrogen_plus1 = f'{resnum+1}n'
+        acyl_carbon_minus1 = f'{resnum-1}c_{sel}'
+        nitrogen = f'{resnum}n_{sel}'
+        calpha = f'{resnum}ca_{sel}'
+        acyl_carbon = f'{resnum}c_{sel}'
+        nitrogen_plus1 = f'{resnum+1}n_{sel}'
         #i-1 acyl carbon
-        cmd.select(acyl_carbon_minus1, f'residue {resnum - 1} and name c')
+        cmd.select(acyl_carbon_minus1, f'residue {resnum - 1} and name c and {sel}')
         #nitrogen
-        cmd.select(nitrogen, f'residue {resnum} and name n')
+        cmd.select(nitrogen, f'residue {resnum} and name n and {sel}')
         #calpha
-        cmd.select(calpha, f'residue {resnum} and name ca')
+        cmd.select(calpha, f'residue {resnum} and name ca and {sel}')
         #acyl_carbon
-        cmd.select(acyl_carbon, f'residue {resnum} and name c')
+        cmd.select(acyl_carbon, f'residue {resnum} and name c and {sel}')
         #i+1 nitrogen
-        cmd.select(nitrogen_plus1, f'residue {resnum + 1} and name n')
-
+        cmd.select(nitrogen_plus1, f'residue {resnum + 1} and name n and {sel}')
         if (cmd.count_atoms(acyl_carbon_minus1) == 1) and (cmd.count_atoms(nitrogen_plus1) == 1):
             try:
                 cmd.dihedral(f'{resnum}_phi', acyl_carbon_minus1, nitrogen, calpha, acyl_carbon)
