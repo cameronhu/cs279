@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from os import listdir
 from os.path import isfile, join
 from numpy import random
+import numpy as np
 
 def compute_sasa(pdbs_folder):
     pdb_files = [f for f in listdir(pdbs_folder) if isfile(join(pdbs_folder, f))]
@@ -10,11 +11,15 @@ def compute_sasa(pdbs_folder):
     'CYS', 'GLY', 'PRO', 'ALA', 'VAL', 'ILE', 'LEU', 'MET', 'PHE', 'TYR', 'TRP']
     aa_mw = [174.2, 155.2, 146.2, 133.1, 147.1, 105.1, 119.1, 132.1, 146.2, 121.2, 75.1,
     115.1, 89.1, 117.1, 131.2, 131.2, 149.2, 165.2, 181.2, 204.2]
-    aa_MaxASA = []
+    aa_MaxASA = [121, 265, 187,187, 148, 214, 214, 97, 216, 195, 191, 230, 203, 228,
+    154, 143, 163, 264, 255, 165]
+    aa_mw_dict = dict(zip(amino_acids, aa_mw))
+    amino_acids.sort()
+    aa_MaxASA_dict = dict(zip(amino_acids, aa_MaxASA))
     polar_aa = ['ARG', 'HIS', 'LYS', 'ASP', 'GLU']
     sasa_dict = {}
     for amino_acid in amino_acids:
-        sasa_dict[amino_acid] = [0, 0, 0]
+        sasa_dict[amino_acid] = [0, 0]
 
     for file in pdb_files:
         cmd.load(pdbs_folder +'/' + file)
@@ -29,29 +34,21 @@ def compute_sasa(pdbs_folder):
             sasa_dict[aa][1] += cmd.get_area(f'{aa}_sel')
         cmd.delete('all')
 
-    sasa_averages = {}
+    sasa_averages = []
+    sasa_averages_norm_mw = []
+    sasa_averages_norm_maxASA = []
     colors = []
     for amino_acid in amino_acids:
-        sasa_averages[amino_acid] = [] #For each amino acid, store non_normalized SASA, normalized SASA by MW, and normalized SASA by Max ASA
         this_sasa = sasa_dict[amino_acid][1] / sasa_dict[amino_acid][0]
-        sasa_averages[amino_acid].append(this_sasa)
+        sasa_norm_mw = this_sasa / aa_mw_dict[amino_acid]
+        sasa_norm_maxASA = this_sasa / aa_MaxASA_dict[amino_acid]
+        sasa_averages.append(this_sasa)
+        sasa_averages_norm_mw.append(sasa_norm_mw)
+        sasa_averages_norm_maxASA.append(sasa_norm_maxASA)
         if amino_acid in polar_aa:
             colors.append('orange')
         else:
             colors.append('blue')
-
-    for key in sasa_averages.get_keys():
-        sasa_averages_norm_mw.append(sasa_averages[i] / aa_mw[i])
-        sasa_averages_norm_total_sasa.append(i)
-
-    #Random values to lists for matplotlib testing
-    # sasa_averages = []
-    # sasa_average_norm = []
-    # colors = []
-    # for i in range(20):
-    #     sasa_averages.append(random.randint(100))
-    #     sasa_average_norm.append(random.randint(100))
-    #     colors.append('purple')
 
     fig1, ax1 = plt.subplots(figsize = (16, 9))
     fig2, ax2 = plt.subplots(figsize = (16, 9))
@@ -60,8 +57,8 @@ def compute_sasa(pdbs_folder):
     ax1.bar(amino_acids, sasa_averages, color=colors)
     ax2.set_title("Average SASA Normalized by Molecular Weight of Different Amino Acid Residues Across the Given PDBs")
     ax2.bar(amino_acids, sasa_averages_norm_mw, color = colors)
-    ax3.set_title("Average SASA Normalized by Total Accessible Surface Area of Different Amino Acid Residues Across the Given PDBs")
-    ax3.bar(amino_acids, sasa_averages_norm_total_sasa, color = colors)
+    ax3.set_title("Average SASA Normalized by Max Accessible Surface Area of Different Amino Acid Residues Across the Given PDBs")
+    ax3.bar(amino_acids, sasa_averages_norm_maxASA, color = colors)
     set_label_titles(ax1)
     set_label_titles(ax2)
     set_label_titles(ax3)
