@@ -1,0 +1,9 @@
+name: cs279-hw2
+channels:
+  - defaults
+  - https://levinthal:paradox@conda.graylab.jhu.edu
+dependencies:
+  - pyrosetta
+  - matplotlib
+prefix: /anaconda3/envs/cs279-hw2
+
