@@ -64,9 +64,10 @@ class MonteCarloPredictor(Predictor):
   def acceptMove(self, currE, newE):
     ### BEGIN YOUR CODE HERE ###
     ## around 2 lines of code ##
-
-    pass # remove this line when editing your code
-
+    if (newE < curreE) or (random() <= exp(newE - currE)):
+        return True
+    else:
+        return False
     ###  END YOUR CODE HERE  ###
 
 
@@ -102,12 +103,14 @@ class MonteCarloPredictor(Predictor):
       # lowest energy you've seen thus far, then you should update the optimum position and energy
 
       ## ~8 lines of code ##
-
-      pass # remove this line when editing your code
-
-      newPose = None # replace this line with your own code
-      newE = None # replace this line with your own code
-
+      newPose = self.sampleMove(currPose)
+      newE = self.forcefield(newPose)
+      if newE < optE:
+          optPose = newPose
+      if self.acceptMove(currE, newE):
+          pose.assign(newPose)
+          currPose = newPose
+          currE = newE
       ###  END YOUR CODE HERE  ###
 
 
