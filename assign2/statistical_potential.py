@@ -229,15 +229,15 @@ def observed_distribution(resname1, resname2, train_structures):
 
     distances = []
     # Edit here
-    for i in range(15):
-        distances[i] = 0
     for structure in train_structures:
         coords_resname1 = get_coords(resname1, structure)
         coords_resname2 = get_coords(resname2, structure)
         dist_list = get_distances(coords_resname1, coords_resname2)
+        # print("Dist List is :")
+        # print(dist_list)
         for dist in dist_list:
-            if dist <= 15:
-                distances[dist - 1] += 1
+            # print(dist)
+            distances.append(dist)
     x, y_obs = histogram(distances)
     ##################################################################
     return x, y_obs # The output from `histogram`
