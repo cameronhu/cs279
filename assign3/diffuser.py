@@ -107,15 +107,18 @@ class StochasticDiffuser(Diffuser):
           #
           # Note: To achieve the "wrap-around" effect it will be helpful to use
           # the self.nextX() and self.nextY() methods.
-          up = (1, 0)
-          down = (-1, 0)
-          left = (0, -1)
-          right = (0, 1)
-          directions = [up, down, left, right]
-          step_direct = directions
+          direction = random()
+          step_block = (0,0)
+          if direction < 0.25: #Up
+              step_block = (self.nextY(row, stepSize), col)
+          elif direction < 0.5: #Down
+              step_block = (self.nextY(row, -stepSize), col)
+          elif direction < 0.75: #Right
+              step_block = (row, self.nextX(col, stepSize))
+          else: #Left
+              step_block = (row, self.nextX(col, -stepSize))
 
-
-
+          newBlocks[step_block[0], step_block[1]] += 1
           # END YOUR CODE HERE
 
     return newBlocks
@@ -210,10 +213,10 @@ def main():
   # EDIT INITIAL SIMULATION PARAMETERS BELOW.
 
   """SINGLE PARTICLE"""
-  c.setBlock((length//2,length//2),1)
+ # c.setBlock((length//2,length//2),1)
 
   """Point Mass"""
-  # c.setBlock((length//2,length//2),1250)
+  c.setBlock((length//2,length//2),1250)
 
   """1D Diffusion"""
   # for i in range(length):
