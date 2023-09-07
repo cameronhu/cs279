@@ -1,3 +1,3 @@
-# CS279
+# Stanford CS279 - Computational Biology: Structure and Organization of Biomolecules and Cells
 
-All code related to the 2022 course CS279.
+
